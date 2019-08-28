@@ -17,4 +17,4 @@ unsigned int sqrt32(unsigned long n)  {
     }  
 }  
 
-// https://nrich.maths.org/412/solution
+// https://sci-hub.tw/10.1109/IranianCEE.2017.7985443
