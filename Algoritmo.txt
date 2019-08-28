@@ -18,3 +18,4 @@ unsigned int sqrt32(unsigned long n)  {
 }  
 
 // https://sci-hub.tw/10.1109/IranianCEE.2017.7985443
+// https://www.semanticscholar.org/paper/Fast-Low-Power-Modulo-2-n-%2B-1-Squarer-Hardware-for-Modugu-Park/1a8d314ddca68330d2329910ba6b69c8d45659f2
