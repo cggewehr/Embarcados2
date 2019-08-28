@@ -16,3 +16,5 @@ unsigned int sqrt32(unsigned long n)  {
         g |= c;  
     }  
 }  
+
+// https://nrich.maths.org/412/solution
