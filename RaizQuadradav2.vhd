@@ -13,7 +13,7 @@ entity SquareRoot is
         Input : in std_logic_vector(15 downto 0); -- Reset is used as DataAV
 
         -- Square root of input value
-        SqrtOfInput : out out std_logic_vector(7 downto 0);
+        SqrtOfInput : out std_logic_vector(7 downto 0);
         Done : out std_logic
 
     );
