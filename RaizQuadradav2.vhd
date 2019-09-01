@@ -88,7 +88,7 @@ begin
 
             elsif currentState = Sor then
 
-                g <= g of (shift_right(unsigned(c), 1);
+                g <= g or (shift_right(unsigned(c), 1);
                 c <= shift_right(unsigned(c), 1);
 
                 if c == 1 then
