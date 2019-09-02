@@ -50,8 +50,8 @@ begin
 
             if currentState = Sreset then
 
-                c <= (6 => '1', others <= 0);
-                g <= (6 => '1', others <= 0);
+                c <= (7 => '1', others <= 0);
+                g <= (7 => '1', others <= 0);
                 n <= Input;
                 Done <= '0';
 
