@@ -154,7 +154,7 @@ begin
 
         c_DataIn <= shift_right(unsigned(c_DataOut), 1);
 
-        C: work.Register(SyncReset)
+        C: entity work.Register(SyncReset)
             generic map (
                 DATAWIDTH => 8,
                 RESETVALUE => 128, --(7 => '1', others <= 0);
@@ -172,7 +172,7 @@ begin
 
         SqrtOfInput <= g_DataOut;
 
-        G: work.Register(SyncReset)
+        G: entity work.Register(SyncReset)
             generic map (
                 DATAWIDTH => 8,
                 RESETVALUE => 128, --(7 => '1', others <= 0);
@@ -190,7 +190,7 @@ begin
 
         n_DataIn <= Input;
 
-        N: work.Register(NoReset)
+        N: entity work.Register(NoReset)
             generic map (
                 DATAWIDTH => 16,
                 RESETVALUE => 0, -- Not Used
@@ -206,7 +206,7 @@ begin
                 DataOut => n_DataOut
             );
 
-        MULTIPLIER: work.Multiplier
+        MULTIPLIER: entity work.Multiplier
             port map (
                 A => g_DataOut,
                 B => g_DataOut,
@@ -218,7 +218,7 @@ begin
         g_xor <= (g_DataOut xor c_DataOut) or shift_right(unsigned(c_DataOut), 1);
         g_or <= g_DataOut or shift_right(unsigned(c_DataOut), 1);
 
-        G_MUX: work.mux_2_1
+        G_MUX: entity work.mux_2_1
             generic map (
                 DATA_WIDTH => 8
             )
