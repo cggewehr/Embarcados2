@@ -152,7 +152,7 @@ begin
 
     DataPath: block begin
 
-        c_DataIn <= shift_right(unsigned(c), 1);
+        c_DataIn <= shift_right(unsigned(c_DataOut), 1);
 
         C: work.Register(SyncReset)
             generic map (
