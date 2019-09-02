@@ -17,7 +17,7 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
 
-entity Register is
+entity ParametrizeableRegister is
 
     generic (
         DATAWIDTH : integer := 32;
@@ -36,9 +36,9 @@ entity Register is
 
     );
     
-end entity Register;
+end entity ParametrizeableRegister;
 
-architecture SyncReset of Register is
+architecture SyncReset of ParametrizeableRegister is
 
 begin
 
@@ -48,7 +48,7 @@ begin
 
             if Reset = RESETLEVEL then
 
-                DataOut <= RESETVALUE;
+                DataOut <= std_logic_vector(to_unsigned(RESETVALUE, DataOut'length));
 
             elsif Enable = '1' then
 
@@ -62,7 +62,7 @@ begin
     
 end architecture SyncReset;
 
-architecture ASyncReset of Register is
+architecture ASyncReset of ParametrizeableRegister is
 
 begin
 
@@ -70,7 +70,7 @@ begin
 
         if Reset = RESETLEVEL then
 
-            DataOut <= RESETVALUE;
+            DataOut <= std_logic_vector(to_unsigned(RESETVALUE, DataOut'length));
 
         elsif rising_edge(Clock) then
 
@@ -82,7 +82,7 @@ begin
     
 end architecture ASyncReset;
 
-architecture NoReset of Register is
+architecture NoReset of ParametrizeableRegister is
 
 begin
 

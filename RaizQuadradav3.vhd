@@ -1,5 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity SquareRoot is
     
@@ -46,6 +48,7 @@ architecture Structutal of SquareRoot is
     -- MUX
     signal g_xor : std_logic_vector(7 downto 0);
     signal g_or : std_logic_vector(7 downto 0);
+	 signal mux_sel : std_logic;
 
 begin
 
@@ -120,6 +123,7 @@ begin
             c_Enable <= '0';
             g_Enable <= '0';
             n_Enable <= '0';
+				mux_sel <= '0';
             Done <= '0';
 
             if currentState = Sreset then
@@ -134,11 +138,13 @@ begin
 
                 g_Enable <= '1';
                 c_Enable <= '1';
+					 mux_sel <= '0';
 
             elsif currentState = Sor then
 
                 g_Enable <= '1';
                 c_Enable <= '1';
+					 mux_sel <= '1';
 
             elsif currentState = Sdone then
 
@@ -152,9 +158,9 @@ begin
 
     DataPath: block begin
 
-        c_DataIn <= shift_right(unsigned(c_DataOut), 1);
+        c_DataIn <= std_logic_vector(shift_right(unsigned(c_DataOut), 1));
 
-        C: entity work.Register(SyncReset)
+        C: entity work.ParametrizeableRegister(SyncReset)
             generic map (
                 DATAWIDTH => 8,
                 RESETVALUE => 128, --(7 => '1', others <= 0);
@@ -172,7 +178,7 @@ begin
 
         SqrtOfInput <= g_DataOut;
 
-        G: entity work.Register(SyncReset)
+        G: entity work.ParametrizeableRegister(SyncReset)
             generic map (
                 DATAWIDTH => 8,
                 RESETVALUE => 128, --(7 => '1', others <= 0);
@@ -190,7 +196,7 @@ begin
 
         n_DataIn <= Input;
 
-        N: entity work.Register(NoReset)
+        N: entity work.ParametrizeableRegister(NoReset)
             generic map (
                 DATAWIDTH => 16,
                 RESETVALUE => 0, -- Not Used
@@ -210,13 +216,13 @@ begin
             port map (
                 A => g_DataOut,
                 B => g_DataOut,
-                MULT_OUT => g_Squared
+                MUL_OUT => g_Squared
             );
 
         COMPARATOR: gSquaredGreaterThanN <= '1' when g_Squared > n_DataOut else '0';
 
-        g_xor <= (g_DataOut xor c_DataOut) or shift_right(unsigned(c_DataOut), 1);
-        g_or <= g_DataOut or shift_right(unsigned(c_DataOut), 1);
+        g_xor <= (g_DataOut xor c_DataOut) or (std_logic_vector(shift_right(unsigned(c_DataOut), 1)));
+        g_or <= g_DataOut or (std_logic_vector(shift_right(unsigned(c_DataOut), 1)));
 
         G_MUX: entity work.mux_2_1
             generic map (
@@ -230,7 +236,6 @@ begin
             );
         
     end block DataPath;
-
     
 end architecture Structutal;
 
@@ -244,7 +249,7 @@ architecture Behavioural of SquareRoot is
 
 begin
 
-    process(Reset) begin
+    process(Reset, nextState) begin
 
         if Reset = '1' then
 
@@ -264,8 +269,8 @@ begin
 
             if currentState = Sreset then
 
-                c <= (7 => '1', others <= 0);
-                g <= (7 => '1', others <= 0);
+                c <= (7 => '1', others=>'0');
+                g <= (7 => '1', others=>'0');
                 n <= Input;
                 Done <= '0';
 
@@ -287,10 +292,10 @@ begin
 
             elsif currentState = Sxor then
 
-                g <= (g xor c) or shift_right(unsigned(c), 1);
-                c <= shift_right(unsigned(c), 1);
+                g <= (g xor c) or std_logic_vector(shift_right(unsigned(c), 1));
+                c <= std_logic_vector(shift_right(unsigned(c), 1));
 
-                if c == 1 then
+                if c = 1 then
 
                     nextState <= Smult;
 
@@ -302,10 +307,10 @@ begin
 
             elsif currentState = Sor then
 
-                g <= g or shift_right(unsigned(c), 1);
-                c <= shift_right(unsigned(c), 1);
+                g <= g or std_logic_vector(shift_right(unsigned(c), 1));
+                c <= std_logic_vector(shift_right(unsigned(c), 1));
 
-                if c == 1 then
+                if c = 1 then
 
                     nextState <= Smult;
 
