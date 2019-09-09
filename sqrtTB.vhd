@@ -88,21 +88,25 @@ BEGIN
       -- hold reset state for 1000 ns.
 		Input <= std_logic_vector(to_unsigned(25, Input'length));
 		Reset <= '1';
-      wait for 1000 ns;	
+		wait for 50 ns;
 		Reset <= '0';
-      -- hold reset state for 1000 ns.
+      wait for 1000 ns;	
 		Input <= std_logic_vector(to_unsigned(49, Input'length));
 		Reset <= '1';
-      wait for 1000 ns;	
-		Reset <= '0';      -- hold reset state for 1000 ns.
-		Input <= std_logic_vector(to_unsigned(50, Input'length));
-		Reset <= '1';
-      wait for 1000 ns;	
-		Reset <= '0';      -- hold reset state for 1000 ns.
-		Input <= std_logic_vector(to_unsigned(81, Input'length));
-		Reset <= '1';
-      wait for 1000 ns;	
+		wait for 50 ns;
 		Reset <= '0';
+      wait for 1000 ns;	
+		Input <= std_logic_vector(to_unsigned(52, Input'length));
+		Reset <= '1';
+		wait for 50 ns;
+		Reset <= '0';
+      wait for 1000 ns;	
+		Input <= std_logic_vector(to_unsigned(88, Input'length));
+		Reset <= '1';
+		wait for 50 ns;
+		Reset <= '0';
+      wait for 1000 ns;	
+
       wait;
    end process;
 

@@ -22,7 +22,7 @@ entity SquareRoot is
 
 end entity SquareRoot;
 
-architecture Structutal of SquareRoot is
+architecture Structural of SquareRoot is
 
     -- C
     signal c_Enable : std_logic;
@@ -237,7 +237,7 @@ begin
         
     end block DataPath;
     
-end architecture Structutal;
+end architecture Structural;
 
 architecture Behavioural of SquareRoot is
 
