@@ -163,7 +163,7 @@ begin
         C: entity work.ParametrizeableRegister(SyncReset)
             generic map (
                 DATAWIDTH => 8,
-                RESETVALUE => 128, --(7 => '1', others <= 0);
+                RESETVALUE => 128, --(7 => '1', others => '0');
                 RESETLEVEL => '1'
             )
             port map (
@@ -181,7 +181,7 @@ begin
         G: entity work.ParametrizeableRegister(SyncReset)
             generic map (
                 DATAWIDTH => 8,
-                RESETVALUE => 128, --(7 => '1', others <= 0);
+                RESETVALUE => 128, --(7 => '1', others => '0');
                 RESETLEVEL => '1'
             )
             port map (

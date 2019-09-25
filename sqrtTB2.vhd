@@ -52,7 +52,7 @@ ARCHITECTURE behavior OF sqrtTB2 IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: entity work.SquareRoot(Structural) PORT MAP (
+   UUT: entity work.SquareRoot PORT MAP (
           Clock => Clock,
           Reset => Reset,
           Input => Input,
