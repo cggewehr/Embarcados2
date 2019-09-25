@@ -30,7 +30,7 @@ architecture RTL of SquareRoot is
 
 begin
 
-    process(Reset) begin
+    NextStateLogic: process(Reset) begin
 
         if Reset = '1' then
 
@@ -44,7 +44,7 @@ begin
 
     end process;
 
-    process(Clock) begin
+    OutputLogic: process(Clock) begin
 
         if rising_edge(Clock) then
 
@@ -58,8 +58,6 @@ begin
                 nextState <= Smult;
 
             elsif currentState = Smult then
-
-                mult <= g * g;
 
                 if (g * g) > n then
 
@@ -76,7 +74,7 @@ begin
                 g <= (g xor c) or (shift_right(unsigned(c), 1);
                 c <= shift_right(unsigned(c), 1);
 
-                if c == 1 then
+                if c = 1 then
 
                     nextState <= Smult;
 
@@ -91,7 +89,7 @@ begin
                 g <= g or (shift_right(unsigned(c), 1);
                 c <= shift_right(unsigned(c), 1);
 
-                if c == 1 then
+                if c = 1 then
 
                     nextState <= Smult;
 
@@ -112,5 +110,7 @@ begin
         end if;
 
     end process;
+
+    SqrtOfInput <= g;
     
 end architecture RTL;
