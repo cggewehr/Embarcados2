@@ -22,9 +22,9 @@ entity SquareRoot is
 
 end entity SquareRoot;
 
-architecture RTL of SquareRoot is
+architecture Behavioural of SquareRoot is
 
-    type state_t is (Sreset, Smult, Sxor, Sor, Sdone);
+    type state_t is (Sreset, Siterate, Sdone);
     signal currentState : state_t;
 
 begin
@@ -51,54 +51,29 @@ begin
 	                n := Input;
 	                Done <= '0';
 
-	                currentState <= Smult;
+	                currentState <= Siterate;
 
-	            elsif currentState = Smult then
+	            elsif currentState = Siterate then
 
 	                if (g * g) > n then
 
-	                    currentState <= Sxor;
+		                g := g xor c;
 
-	                else
+		            end if;
 
-	                    currentState <= Sor;
+		            c := std_logic_vector(shift_right(unsigned(c), 1));
 
-	                end if;
+		            if c = 0 then
 
-	            elsif currentState = Sxor then
+		            	Done <= '1';
+		                currentState <= Sdone;
 
-	                --g <= (g xor c) or (std_logic_vector(shift_right(unsigned(c), 1)));
-	                --c <= std_logic_vector(shift_right(unsigned(c), 1));
+		            else
 
-	                g := g xor c;
-	                c := std_logic_vector(shift_right(unsigned(c), 1));
+		                g := g or c;
+		                currentState <= Siterate;
 
-	                if c = 0 then
-
-	                    currentState <= Sdone;
-
-	                else
-
-	                	g := g or c;
-	                    currentState <= Smult;
-
-	                end if;
-
-	            elsif currentState = Sor then
-
-	                --g <= g or std_logic_vector(shift_right(unsigned(c), 1));
-	                c := std_logic_vector(shift_right(unsigned(c), 1));
-
-	                if c = 0 then
-
-	                    currentState <= Sdone;
-
-	                else
-
-	                    g := g or c;
-	                    currentState <= Smult;
-
-	                end if;
+		            end if;
 
 	            elsif currentState = Sdone then
 
@@ -114,4 +89,4 @@ begin
 
     end process;
     
-end architecture RTL;
+end architecture Behavioural;
