@@ -1,0 +1,113 @@
+##-------------------------------------------------------------
+##-------------------------------------------------------------
+## Time Groups
+TIMEGRP	"proc_in_tg" OFFSET = IN 10 ns VALID 10 ns BEFORE "clk" RISING;
+TIMEGRP	"proc_out_tg" OFFSET = OUT 10 ns AFTER "clk" RISING;
+
+#--- Input
+# INST "RxD"		TNM = proc_in_tg;
+INST "rst_bt"	TNM = proc_in_tg;
+
+#--- Output
+# INST "TxD"		TNM = proc_out_tg;
+
+##-------------------------------------------------------------
+##-------------------------------------------------------------
+## onBoard Clock, USB-RS232 (UART) and Push-Button
+#---
+NET "clk"	LOC = V10 |IOSTANDARD = LVCMOS33;
+NET "clk"	TNM_NET = "clk_in";
+
+#---
+NET "RxD"	LOC = N17 |IOSTANDARD = LVCMOS33;
+NET "TxD"	LOC = N18 |IOSTANDARD = LVCMOS33;
+#---
+NET "rst_bt" LOC = C9 |IOSTANDARD = LVCMOS33;
+
+##-------------------------------------------------------------
+##-------------------------------------------------------------
+##-------------------------------------------------------------
+##-------------------------------------------------------------
+## Time Specs
+
+##-------------------------------------------------------------
+## Time Specs inside instances
+
+#-- Core groups
+TIMESPEC TS_core = FROM "core_ff" TO "core_ff" 10 ns;
+TIMESPEC TS_regfile1 = FROM "ifid_ff" TO "core_regfile" 5 ns;
+TIMESPEC TS_regfile2 = FROM "core_regfile" TO "idex_ff" 5 ns;
+
+INST "core_i/*"					TNM = "core_ff";
+INST "core_i/stage_1/*"			TNM = "core_if_ff";
+
+INST "core_i/stage_2/RegFile_i/*regs_file*"	TNM	= "core_regfile";
+
+INST "core_i/stage_1/ifid*" 	TNM = "ifid_ff";
+INST "core_i/stage_2/idex*" 	TNM = "idex_ff";
+INST "core_i/stage_3/exmem*" 	TNM = "exmem_ff";
+INST "core_i/stage_4/memwb*" 	TNM = "memwb_ff";
+
+#-- Cache groups
+TIMESPEC TS_icache_TO_icache = FROM "icache_ff" TO "icache_ff" 10 ns;
+TIMESPEC TS_dcache_TO_dcache = FROM "dcache_ff" TO "dcache_ff" 10 ns;
+TIMESPEC TS_dcache_TO_BRAM	 = FROM "dcache_bram" TO "dcache_bram" TIG;
+
+INST "cache_i/*"				TNM = "cache_ff";
+INST "cache_i/icache_ctrl_i/*"	TNM = "icache_ff";
+INST "cache_i/dcache_ctrl_i/*"	TNM = "dcache_ff";
+
+INST "cache_i/dcache_ctrl_i/dcache_i/*cache*"	TNM = "dcache_bram";
+
+#-- Cache Ctrl groups
+TIMESPEC TS_cachectrl_TO_cachectrl = FROM "cachectrl_ff" TO "cachectrl_ff" 10 ns;
+INST "cache_ctrl_i/*"	TNM = "cachectrl_ff";
+
+#-- IO groups
+TIMESPEC TS_io_TO_io = FROM "io_addr_bus_ff" TO "io_ff" 10 ns;
+TIMESPEC TS_io_uart_TO_io_uart = FROM "io_uart_ff" TO "io_uart_ff" 10 ns;
+
+INST "io_i/UART_control_i/uart_i/*"	TNM = "io_uart_ff";
+INST "io_i/*addr_BUS*"	TNM = "io_addr_bus_ff";
+INST "io_i/*"			TNM = "io_ff";
+
+##-------------------------------------------------------------
+## Time Specs between instances
+
+#-- RST Logic
+TIMESPEC TS_rst_int_TO_rst_core	= FROM "rst_int_ff" TO "rst_core_ff" 10 ns;
+TIMESPEC TS_rst_db_TO_rst_core	= FROM "rst_db_ff" TO "rst_core_ff" 10 ns;
+TIMESPEC TS_rst_int_TO_rst_cache= FROM "rst_int_ff" TO "cache_ff" 10 ns;
+TIMESPEC TS_rst_db_TO_rst_cache	= FROM "rst_db_ff" TO "cache_ff" 10 ns;
+
+INST "*rst_int*"				TNM = "rst_int_ff";
+INST "rst_bt_debounce_i/*"		TNM = "rst_db_ff";
+INST "core_i/*rst_core*"		TNM = "rst_core_ff";
+
+#-- Core <==> Instr. Cache
+TIMESPEC TS_core_if_TO_icache	= FROM "core_if_ff" TO "icache_ff" 10 ns;
+TIMESPEC TS_icache_TO_core_ifid	= FROM "icache_ff" TO "ifid_ff" 10 ns;
+
+#-- Core <==> Data Cache
+TIMESPEC TS_core_df1_TO_dcache	= FROM "idex_ff" TO "dcache_ff" 10 ns;
+TIMESPEC TS_core_df2_TO_dcache	= FROM "exmem_ff" TO "dcache_ff" 10 ns;
+TIMESPEC TS_core_df3_TO_dcache	= FROM "memwb_ff" TO "dcache_ff" 10 ns;
+TIMESPEC TS_dcache_TO_core		= FROM "dcache_ff" TO "core_ff" 10 ns;
+
+#-- Core <==> IO
+TIMESPEC TS_core_idex_TO_io	 = FROM "idex_ff" TO "io_ff" 10 ns;
+TIMESPEC TS_core_exmem_TO_io = FROM "exmem_ff" TO "io_ff" 10 ns;
+TIMESPEC TS_core_memwb_TO_io = FROM "memwb_ff" TO "io_ff" 10 ns;
+TIMESPEC TS_io_TO_core		 = FROM "io_ff" TO "memwb_ff" 10 ns;
+
+#-- Cache <==> Cache Ctrl
+TIMESPEC TS_cache_TO_cachectrl = FROM "cache_ff" TO "cachectrl_ff" 10 ns;
+TIMESPEC TS_cachectrl_TO_cache = FROM "cachectrl_ff" TO "cache_ff" 10 ns;
+
+#-- Cache <==> Cellram Interface
+TIMESPEC TS_cache_TO_cellram = FROM "cache_ff" TO "cellram_ff" 10 ns;
+TIMESPEC TS_cellram_TO_cache = FROM "cellram_ff" TO "cache_ff" 10 ns;
+
+#-- Cache Ctrl <==> Cellram Interface
+TIMESPEC TS_cachectrl_TO_cellram = FROM "cachectrl_ff" TO "cellram_ff" 10 ns;
+TIMESPEC TS_cellram_TO_cachectrl = FROM "cellram_ff" TO "cachectrl_ff" 10 ns;

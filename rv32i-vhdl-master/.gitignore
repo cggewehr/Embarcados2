@@ -1,0 +1,9 @@
+.directory
+
+# temp
+
+# vhd ignore
+**/bt_debounce.vhd
+
+# temp folder
+temp
